@@ -1,13 +1,18 @@
 import 'dotenv/config'
-import { Sequelize } from 'sequelize'
+import { Options } from 'sequelize'
 
-const sequelize = new Sequelize(process.env.CONNECT_TO_DB_URL as string)
-
-export async function test() {
-  try {
-    await sequelize.authenticate()
-    console.log('Connection has been established successfully.')
-  } catch (error) {
-    console.error('Unable to connect to the database:', error)
-  }
+const config: Options = {
+  username: process.env.POSTGRES_USER as string,
+  password: process.env.POSTGRES_PASSWORD as string,
+  database: process.env.POSTGRES_DATABASE as string,
+  host: process.env.POSTGRES_HOST as string,
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+    },
+    schema: 'public',
+  },
 }
+
+module.exports = config
