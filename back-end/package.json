@@ -1,10 +1,10 @@
 {
   "name": "back-end",
   "version": "1.0.0",
-  "main": "index.",
+  "main": "src/server.ts",
   "scripts": {
     "test": "",
-    "dev": "nodemon src/app.ts --watch"
+    "dev": "nodemon src/server.ts --watch"
   },
   "keywords": [],
   "author": "",
