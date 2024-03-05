@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response, Router } from 'express'
+import { getLoginController } from '../controller/login'
 
 export const loginRouter: Router = express.Router()
 
@@ -7,6 +8,6 @@ loginRouter.use((_req: Request, _res: Response, next: NextFunction) => {
   next()
 })
 
-loginRouter.get('/', (_req: Request, res: Response) => {
-  return res.status(200).json({ message: 'OK!' })
-})
+loginRouter.get('/', (req: Request, res: Response) =>
+  getLoginController(req, res),
+)

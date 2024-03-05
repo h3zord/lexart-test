@@ -15,7 +15,8 @@ export interface IUserModel
   id: CreationOptional<number>
   fullName: string
   email: string
-  accountType: 'admin' | 'normal'
+  password: string
+  accountType: 'admin' | 'user'
 }
 
 export const User = sequelize.define<IUserModel>(
@@ -37,9 +38,14 @@ export const User = sequelize.define<IUserModel>(
       allowNull: false,
       unique: true,
     },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     accountType: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 'user',
     },
   },
   {

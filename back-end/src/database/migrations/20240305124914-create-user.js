@@ -21,9 +21,14 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      password: {
+        type: Sequelize.DataTypes.STRING,
+        allowNull: false,
+      },
       accountType: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
+        defaultValue: 'user',
       },
       createdAt: {
         type: Sequelize.DataTypes.DATE,
