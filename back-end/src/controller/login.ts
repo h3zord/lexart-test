@@ -1,8 +1,13 @@
-import { Request, Response } from 'express'
-import { z } from 'zod'
+import { NextFunction, Request, Response } from 'express'
+import { ZodError, z } from 'zod'
 import { getLoginService, postLoginService } from '../service/login'
+import { fromZodError } from 'zod-validation-error'
 
-export async function getLoginController(req: Request, res: Response) {
+export async function getLoginController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const loginSchema = z
     .object({
       email: z
@@ -28,7 +33,9 @@ export async function getLoginController(req: Request, res: Response) {
   try {
     loginSchema.parse({ email, password })
   } catch (error) {
-    console.error(error)
+    const validationError = fromZodError(error as ZodError)
+
+    next(validationError)
   }
 
   const { token } = await getLoginService({ email, password })
@@ -36,7 +43,11 @@ export async function getLoginController(req: Request, res: Response) {
   return res.status(200).json({ token })
 }
 
-export async function postLoginController(req: Request, res: Response) {
+export async function postLoginController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const loginSchema = z
     .object({
       fullName: z
@@ -73,7 +84,9 @@ export async function postLoginController(req: Request, res: Response) {
   try {
     loginSchema.parse({ fullName, email, password, accountType })
   } catch (error) {
-    console.error(error)
+    const validationError = fromZodError(error as ZodError)
+
+    next(validationError)
   }
 
   const { token } = await postLoginService({

@@ -34,6 +34,10 @@ export async function postLoginService({
   password,
   accountType,
 }: IPostUserData) {
+  const userAlreadyExists = await User.findOne({ where: { email } })
+
+  if (userAlreadyExists) throw new Error('User already exists')
+
   const userData = await User.create({ fullName, email, password, accountType })
 
   const { token } = createJwtToken({
