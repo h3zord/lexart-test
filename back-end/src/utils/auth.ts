@@ -22,3 +22,15 @@ export function createJwtToken({ fullName, email, accountType }: IUserData) {
 
   return { token }
 }
+
+interface IToken {
+  token: string
+}
+
+export function validateJwtToken({ token }: IToken) {
+  try {
+    jwt.verify(token, process.env.SECRET_KEY as string)
+  } catch (_error) {
+    throw new Error('Token is invalid')
+  }
+}

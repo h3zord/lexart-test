@@ -1,5 +1,5 @@
 import { User } from '../database/models/user'
-import { createJwtToken } from '../utils/createToken'
+import { createJwtToken } from '../utils/auth'
 
 interface IGetUserData {
   email: string
