@@ -1,5 +1,6 @@
 import { User } from '../database/models/user'
 import { createJwtToken } from '../utils/auth'
+import bcrypt from 'bcryptjs'
 
 interface IGetUserData {
   email: string
@@ -10,7 +11,11 @@ export async function getLoginService({ email, password }: IGetUserData) {
   const userData = await User.findOne({ where: { email } })
 
   if (!userData) throw new Error('User not found')
-  if (userData.password !== password) throw new Error('Passwords do not match')
+
+  const hash = userData.password
+
+  if (!bcrypt.compareSync(password, hash))
+    throw new Error('Password do not match')
 
   const { token } = createJwtToken({
     fullName: userData.fullName,
@@ -37,6 +42,11 @@ export async function postLoginService({
   const userAlreadyExists = await User.findOne({ where: { email } })
 
   if (userAlreadyExists) throw new Error('User already exists')
+
+  const salt = bcrypt.genSaltSync(10)
+  const hash = bcrypt.hashSync(password, salt)
+
+  password = hash
 
   const userData = await User.create({ fullName, email, password, accountType })
 

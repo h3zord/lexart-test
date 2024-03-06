@@ -22,7 +22,9 @@ export async function getLoginController(
           required_error: 'Password is required',
           invalid_type_error: 'Password must be a string',
         })
-        .length(60, { message: 'Hash must be exactly 60 characters long' }),
+        .min(6, {
+          message: 'Password must be 6 or more characters long',
+        }),
     })
     .required()
 
@@ -74,7 +76,9 @@ export async function postLoginController(
           required_error: 'Password is required',
           invalid_type_error: 'Password must be a string',
         })
-        .length(60, { message: 'Hash must be exactly 60 characters long' }),
+        .min(6, {
+          message: 'Password must be 6 or more characters long',
+        }),
       accountType: z.enum(['admin', 'user'], {
         required_error: 'Account type is required',
         invalid_type_error: 'Account type must be "admin" or "user"',

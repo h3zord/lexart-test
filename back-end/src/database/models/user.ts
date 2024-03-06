@@ -44,8 +44,8 @@ export const User = sequelize.define<IUserModel>(
     },
     accountType: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       defaultValue: 'user',
+      allowNull: false,
     },
   },
   {
