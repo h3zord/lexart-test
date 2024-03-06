@@ -28,17 +28,22 @@ export async function getLoginController(
 
   type LoginSchema = z.infer<typeof loginSchema>
 
-  const { email, password }: LoginSchema = req.body
+  const { email, password } = req.body as LoginSchema
+
+  let userData = {} as LoginSchema
 
   try {
-    loginSchema.parse({ email, password })
+    userData = loginSchema.parse({ email, password })
   } catch (error) {
     const validationError = fromZodError(error as ZodError)
 
-    next(validationError)
+    return next(validationError)
   }
 
-  const { token } = await getLoginService({ email, password })
+  const { token } = await getLoginService({
+    email: userData.email,
+    password: userData.password,
+  })
 
   return res.status(200).json({ token })
 }
@@ -79,21 +84,23 @@ export async function postLoginController(
 
   type LoginSchema = z.infer<typeof loginSchema>
 
-  const { fullName, email, password, accountType }: LoginSchema = req.body
+  const { fullName, email, password, accountType } = req.body as LoginSchema
+
+  let userData = {} as LoginSchema
 
   try {
-    loginSchema.parse({ fullName, email, password, accountType })
+    userData = loginSchema.parse({ fullName, email, password, accountType })
   } catch (error) {
     const validationError = fromZodError(error as ZodError)
 
-    next(validationError)
+    return next(validationError)
   }
 
   const { token } = await postLoginService({
-    fullName,
-    email,
-    password,
-    accountType,
+    fullName: userData.fullName,
+    email: userData.email,
+    password: userData.password,
+    accountType: userData.accountType,
   })
 
   return res.status(201).json({ token })

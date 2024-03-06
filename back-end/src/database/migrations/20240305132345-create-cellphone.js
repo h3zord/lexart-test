@@ -11,6 +11,10 @@ module.exports = {
         autoIncrement: true,
         unique: true,
       },
+      name: {
+        type: Sequelize.DataTypes.STRING,
+        allowNull: false,
+      },
       brand: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
@@ -29,6 +33,12 @@ module.exports = {
       },
       thumbnail: {
         type: Sequelize.DataTypes.STRING,
+      },
+      createdAt: {
+        type: Sequelize.DataTypes.DATE,
+      },
+      updatedAt: {
+        type: Sequelize.DataTypes.DATE,
       },
     })
   },

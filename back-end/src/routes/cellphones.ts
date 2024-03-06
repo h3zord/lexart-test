@@ -1,10 +1,11 @@
-import express, { Request, Response, Router } from 'express'
+import express, { NextFunction, Request, Response, Router } from 'express'
 import { tokenHandler } from '../middlewares/tokenHandler'
+import { getCellphonesController } from '../controller/cellphones'
 
 export const cellphonesRouter: Router = express.Router()
 
-cellphonesRouter.use(tokenHandler)
+// cellphonesRouter.use(tokenHandler)
 
-cellphonesRouter.get('/', (_req: Request, res: Response) => {
-  return res.status(200).json({ message: 'OK!' })
-})
+cellphonesRouter.get('/', (req: Request, res: Response, next: NextFunction) =>
+  getCellphonesController(req, res, next),
+)

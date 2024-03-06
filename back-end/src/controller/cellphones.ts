@@ -1,0 +1,64 @@
+import { NextFunction, Request, Response } from 'express'
+import { z } from 'zod'
+import { getCellphonesService } from '../service/cellphones'
+import { ZodError, fromZodError } from 'zod-validation-error'
+
+export async function getCellphonesController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const searchOptionsSchema = z.object({
+    name: z
+      .string({ invalid_type_error: 'Name must be a string' })
+      .toLowerCase()
+      .optional(),
+    brand: z
+      .string({ invalid_type_error: 'Brand must be a string' })
+      .toLowerCase()
+      .optional(),
+    model: z
+      .string({ invalid_type_error: 'Model must be a string' })
+      .toLowerCase()
+      .optional(),
+    color: z
+      .string({ invalid_type_error: 'Color must be a string' })
+      .toLowerCase()
+      .optional(),
+    price: z
+      .enum(['ASC', 'DESC'], {
+        invalid_type_error: 'Price must be "ASC" or "DESC"',
+      })
+      .optional(),
+  })
+
+  type SearchOptionsSchema = z.infer<typeof searchOptionsSchema>
+
+  const { name, brand, model, color, price } = req.body as SearchOptionsSchema
+
+  let searchOptions = {} as SearchOptionsSchema
+
+  try {
+    searchOptions = searchOptionsSchema.parse({
+      name,
+      brand,
+      model,
+      color,
+      price,
+    })
+  } catch (error) {
+    const validationError = fromZodError(error as ZodError)
+
+    return next(validationError)
+  }
+
+  const { cellphonesList } = await getCellphonesService({
+    name: searchOptions.name,
+    brand: searchOptions.brand,
+    model: searchOptions.model,
+    color: searchOptions.color,
+    price: searchOptions.price,
+  })
+
+  return res.status(200).json(cellphonesList)
+}

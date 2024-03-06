@@ -13,6 +13,7 @@ export interface ICellphoneModel
     InferCreationAttributes<ICellphoneModel>
   > {
   id: CreationOptional<number>
+  name: string
   brand: string
   model: string
   price: number
@@ -29,6 +30,10 @@ export const Cellphone = sequelize.define<ICellphoneModel>(
       primaryKey: true,
       autoIncrement: true,
       unique: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     brand: {
       type: DataTypes.STRING,
