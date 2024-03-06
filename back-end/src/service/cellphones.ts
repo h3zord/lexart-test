@@ -44,6 +44,33 @@ export async function getCellphonesService({
   return { cellphonesList }
 }
 
+interface IPostData {
+  name: string
+  brand: string
+  model: string
+  color: string
+  price: number
+  thumbnail?: string
+}
+
+export async function postCellphonesService({
+  name,
+  brand,
+  model,
+  color,
+  price,
+  thumbnail,
+}: IPostData) {
+  await Cellphone.create({
+    name,
+    brand,
+    model,
+    color,
+    price,
+    thumbnail,
+  })
+}
+
 interface IUpdateData {
   id: string
   name: string
@@ -74,4 +101,18 @@ export async function updateCellphonesService({
 
   if (!affectedCount)
     throw new Error('Failed to update, verify your ID or update data')
+}
+
+interface IDeleteData {
+  id: string
+}
+
+export async function deleteCellphonesService({ id }: IDeleteData) {
+  const affectedCount = await Cellphone.destroy({
+    where: {
+      id,
+    },
+  })
+
+  if (!affectedCount) throw new Error('Failed to delete, verify your ID')
 }
