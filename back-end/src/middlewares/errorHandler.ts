@@ -6,7 +6,7 @@ export function errorHandler(
   res: Response,
   next: NextFunction,
 ) {
-  res.status(404).json({ message: err.message })
+  res.status(404).json({ error: err.message })
 
   next(err.message)
 }

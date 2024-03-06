@@ -1,6 +1,9 @@
 import express, { NextFunction, Request, Response, Router } from 'express'
 import { tokenHandler } from '../middlewares/tokenHandler'
-import { getCellphonesController } from '../controller/cellphones'
+import {
+  getCellphonesController,
+  updateCellphonesController,
+} from '../controller/cellphones'
 
 export const cellphonesRouter: Router = express.Router()
 
@@ -8,4 +11,10 @@ export const cellphonesRouter: Router = express.Router()
 
 cellphonesRouter.get('/', (req: Request, res: Response, next: NextFunction) =>
   getCellphonesController(req, res, next),
+)
+
+cellphonesRouter.put(
+  '/:id',
+  (req: Request, res: Response, next: NextFunction) =>
+    updateCellphonesController(req, res, next),
 )

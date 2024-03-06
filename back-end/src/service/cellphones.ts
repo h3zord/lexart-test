@@ -24,7 +24,7 @@ export async function getCellphonesService({
 
   const filteredConditions = Object.fromEntries(
     Object.entries(searchConditions).filter(
-      ([_, value]) => value !== undefined,
+      ([, condition]) => condition !== undefined,
     ),
   )
 
@@ -42,4 +42,36 @@ export async function getCellphonesService({
     throw new Error('There are no products registered in the database')
 
   return { cellphonesList }
+}
+
+interface IUpdateData {
+  id: string
+  name: string
+  brand: string
+  model: string
+  color: string
+  price: number
+  thumbnail?: string
+}
+
+export async function updateCellphonesService({
+  id,
+  name,
+  brand,
+  model,
+  color,
+  price,
+  thumbnail,
+}: IUpdateData) {
+  const [affectedCount] = await Cellphone.update(
+    { name, brand, model, color, price, thumbnail },
+    {
+      where: {
+        id,
+      },
+    },
+  )
+
+  if (!affectedCount)
+    throw new Error('Failed to update, verify your ID or update data')
 }
