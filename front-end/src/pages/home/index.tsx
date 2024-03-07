@@ -52,10 +52,9 @@ export function Home() {
           error.response?.data.error.includes('Token')
         ) {
           console.error(error.response.data.error)
-          return navigate('/login')
         }
 
-        console.error(error)
+        return navigate('/login')
       }
     }
 

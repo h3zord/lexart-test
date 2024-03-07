@@ -138,8 +138,6 @@ export function EditCellphones() {
     }
   }
 
-  console.log(cellphonesList)
-
   return (
     <section>
       <form onSubmit={handleSubmit(submitUpdateDataSchema)}>
