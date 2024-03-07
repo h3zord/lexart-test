@@ -1,20 +1,27 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from 'react-router-dom'
 import { api } from '../../utils/axios'
 import { AxiosError } from 'axios'
+import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 
-export function Login() {
-  const loginDataSchema = z.object({
+export function Register() {
+  const registerDataSchema = z.object({
+    fullName: z
+      .string({
+        required_error: 'Name is required',
+        invalid_type_error: 'Name must be a string',
+      })
+      .min(5, { message: 'FullName must be 5 or more characters long' })
+      .toLowerCase(),
     email: z
       .string({
         required_error: 'Email is required',
         invalid_type_error: 'Email must be a string',
       })
       .email({ message: 'Invalid email address' })
-      .transform((email) => email.toLowerCase()),
+      .toLowerCase(),
     password: z
       .string({
         required_error: 'Password is required',
@@ -25,32 +32,36 @@ export function Login() {
       }),
   })
 
-  type LoginDataSchema = z.infer<typeof loginDataSchema>
+  type RegisterDataSchema = z.infer<typeof registerDataSchema>
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { isSubmitting },
-  } = useForm<LoginDataSchema>({
-    resolver: zodResolver(loginDataSchema),
+  } = useForm<RegisterDataSchema>({
+    resolver: zodResolver(registerDataSchema),
     defaultValues: {
-      email: '',
+      fullName: '',
       password: '',
+      email: '',
     },
   })
 
   const navigate = useNavigate()
 
-  const passwordLessThanFive = watch('password').length < 5
+  const passwordAndNameLessThanFive =
+    watch('fullName').length < 5 || watch('password').length < 5
 
-  async function submitLoginData(loginData: LoginDataSchema) {
+  async function submitRegisterData(registerData: RegisterDataSchema) {
     try {
       const {
         data: { token },
-      } = await api.post('/login', {
-        email: loginData.email,
-        password: loginData.password,
+      } = await api.post('/login/create', {
+        fullName: registerData.fullName,
+        email: registerData.email,
+        password: registerData.password,
+        accountType: 'user',
       })
 
       Cookies.set('token', token, { expires: 7 })
@@ -65,36 +76,39 @@ export function Login() {
     }
   }
 
-  function pushToRegister() {
-    navigate('/register')
+  function pushToLogin() {
+    navigate('/login')
   }
 
   return (
     <section>
-      <form id="login-form" onSubmit={handleSubmit(submitLoginData)}>
+      <form id="register-form" onSubmit={handleSubmit(submitRegisterData)}>
         <input
-          type="email"
+          {...register('fullName')}
+          placeholder="Type your full name!"
+          type="text"
+        />
+        <input
           {...register('email')}
           placeholder="Type your email!"
+          type="email"
         />
-
         <input
-          type="password"
           {...register('password')}
           placeholder="Type your password!"
+          type="password"
         />
       </form>
 
       <div>
         <button
-          form="login-form"
+          form="register-form"
           type="submit"
-          disabled={isSubmitting || passwordLessThanFive}
+          disabled={isSubmitting || passwordAndNameLessThanFive}
         >
-          Login
+          Register
         </button>
-
-        <button onClick={pushToRegister}>Register</button>
+        <button onClick={pushToLogin}>Back</button>
       </div>
     </section>
   )

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { ZodError, z } from 'zod'
 import { getLoginService, postLoginService } from '../service/login'
 import { fromZodError } from 'zod-validation-error'
+import { tokenHandler } from '../middlewares/tokenHandler'
 
 export async function getLoginController(
   req: Request,
@@ -22,8 +23,8 @@ export async function getLoginController(
           required_error: 'Password is required',
           invalid_type_error: 'Password must be a string',
         })
-        .min(6, {
-          message: 'Password must be 6 or more characters long',
+        .min(5, {
+          message: 'Password must be 5 or more characters long',
         }),
     })
     .required()
@@ -76,8 +77,8 @@ export async function postLoginController(
           required_error: 'Password is required',
           invalid_type_error: 'Password must be a string',
         })
-        .min(6, {
-          message: 'Password must be 6 or more characters long',
+        .min(5, {
+          message: 'Password must be 5 or more characters long',
         }),
       accountType: z.enum(['admin', 'user'], {
         required_error: 'Account type is required',
@@ -99,6 +100,8 @@ export async function postLoginController(
 
     return next(validationError)
   }
+
+  if (accountType === 'admin') tokenHandler(req, res, next)
 
   const { token } = await postLoginService({
     fullName: userData.fullName,

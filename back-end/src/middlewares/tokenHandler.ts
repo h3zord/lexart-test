@@ -3,7 +3,7 @@ import { validateJwtToken } from '../utils/auth'
 
 export async function tokenHandler(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) {
   const { authorization: token } = req.headers
