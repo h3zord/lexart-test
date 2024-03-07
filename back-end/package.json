@@ -4,7 +4,8 @@
   "main": "src/server.ts",
   "scripts": {
     "test": "",
-    "dev": "nodemon src/server.ts --watch"
+    "dev": "nodemon src/server.ts --watch",
+    "prod": "npx tsc && node ./build/server.js"
   },
   "keywords": [],
   "author": "",
