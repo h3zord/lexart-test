@@ -107,14 +107,45 @@ export async function postCellphonesController(
         invalid_type_error: 'Thumbnail must be a string',
       })
       .optional(),
+    structure: z
+      .enum(['1', '2', '3'], {
+        invalid_type_error: 'Structure must be "1", "2" or "3"',
+      })
+      .optional(),
   })
 
   type PostDataSchema = z.infer<typeof postDataSchema>
 
-  const { name, brand, model, color, price, thumbnail } =
-    req.body as PostDataSchema
+  let name
+  let brand
+  let model
+  let color
+  let price
+  let thumbnail
+
+  const { structure } = req.body as PostDataSchema
 
   let postData = {} as PostDataSchema
+
+  console.log(structure)
+
+  if (structure === '1') {
+    name = req.body.name
+    brand = req.body.brand
+    model = req.body.model
+    color = req.body.color
+    price = req.body.price
+    thumbnail = req.body.thumbnail
+  }
+
+  if (structure === '2') {
+    name = req.body.name
+    brand = req.body.details.brand
+    model = req.body.details.model
+    color = req.body.details.color
+    price = req.body.price
+    thumbnail = req.body.thumbnail
+  }
 
   try {
     postData = postDataSchema.parse({

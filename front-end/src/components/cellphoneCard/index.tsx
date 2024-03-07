@@ -4,7 +4,7 @@ interface ICellphoneData {
   model: string
   color: string
   price: number
-  thumbnail: string
+  thumbnail: string | undefined
 }
 
 export function CellphoneCard({

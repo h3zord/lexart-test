@@ -34,9 +34,6 @@ export async function getCellphonesService({
     order: price && [['price', price]],
   })
 
-  if (!cellphonesList.length)
-    throw new Error('There are no products registered in the database')
-
   return { cellphonesList }
 }
 
