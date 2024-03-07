@@ -5,8 +5,21 @@ import { api } from '../../utils/axios'
 import { AxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
+import { useEffect, useState } from 'react'
+import { getToken } from '../../utils/getToken'
+import { decodeToken } from '../../utils/decodeToken'
 
 export function Register() {
+  const [isAdmin, setIsAdmin] = useState<boolean>(false)
+
+  const { token } = getToken()
+
+  const jwtDecoded = decodeToken(token)
+
+  useEffect(() => {
+    jwtDecoded?.accountType === 'admin' && setIsAdmin(true)
+  }, [jwtDecoded?.accountType])
+
   const registerDataSchema = z.object({
     fullName: z
       .string({
@@ -30,6 +43,11 @@ export function Register() {
       .min(5, {
         message: 'Password must be 5 or more characters long',
       }),
+    accountType: z
+      .enum(['admin', 'user'], {
+        invalid_type_error: 'Account type must be "admin" or "user"',
+      })
+      .optional(),
   })
 
   type RegisterDataSchema = z.infer<typeof registerDataSchema>
@@ -45,6 +63,7 @@ export function Register() {
       fullName: '',
       password: '',
       email: '',
+      accountType: 'user',
     },
   })
 
@@ -55,18 +74,29 @@ export function Register() {
 
   async function submitRegisterData(registerData: RegisterDataSchema) {
     try {
+      const URL = isAdmin ? '/login/create/admin' : '/login/create'
+
       const {
-        data: { token },
-      } = await api.post('/login/create', {
-        fullName: registerData.fullName,
-        email: registerData.email,
-        password: registerData.password,
-        accountType: 'user',
-      })
+        data: { token: newToken },
+      } = await api.post(
+        URL,
+        {
+          fullName: registerData.fullName,
+          email: registerData.email,
+          password: registerData.password,
+          accountType: registerData.accountType,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
+        },
+      )
 
-      Cookies.set('token', token, { expires: 7 })
-
-      navigate('/')
+      if (!isAdmin) {
+        Cookies.set('token', newToken, { expires: 7 })
+        return navigate('/')
+      }
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         return console.error(error.response.data.error)
@@ -78,6 +108,10 @@ export function Register() {
 
   function pushToLogin() {
     navigate('/login')
+  }
+
+  function pushToHome() {
+    navigate('/')
   }
 
   return (
@@ -98,6 +132,16 @@ export function Register() {
           placeholder="Type your password!"
           type="password"
         />
+
+        {isAdmin && (
+          <>
+            <label htmlFor="account-type">Type Account</label>
+            <select {...register('accountType')} id="account-type">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </>
+        )}
       </form>
 
       <div>
@@ -108,7 +152,8 @@ export function Register() {
         >
           Register
         </button>
-        <button onClick={pushToLogin}>Back</button>
+        <button onClick={pushToLogin}>Back to Login</button>
+        {isAdmin && <button onClick={pushToHome}>Back to Home</button>}
       </div>
     </section>
   )

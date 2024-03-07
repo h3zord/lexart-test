@@ -9,7 +9,7 @@ import {
 
 export const cellphonesRouter: Router = express.Router()
 
-// cellphonesRouter.use(tokenHandler)
+cellphonesRouter.use(tokenHandler)
 
 cellphonesRouter.get('/', (req: Request, res: Response, next: NextFunction) =>
   getCellphonesController(req, res, next),

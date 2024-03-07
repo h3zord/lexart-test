@@ -23,12 +23,12 @@ module.exports = {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
-      price: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false,
-      },
       color: {
         type: Sequelize.DataTypes.STRING,
+        allowNull: false,
+      },
+      price: {
+        type: Sequelize.DataTypes.INTEGER,
         allowNull: false,
       },
       thumbnail: {

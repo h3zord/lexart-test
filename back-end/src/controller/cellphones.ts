@@ -39,7 +39,7 @@ export async function getCellphonesController(
 
   type SearchOptionsSchema = z.infer<typeof searchOptionsSchema>
 
-  const { name, brand, model, color, price } = req.body as SearchOptionsSchema
+  const { name, brand, model, color, price } = req.query as SearchOptionsSchema
 
   let searchOptions = {} as SearchOptionsSchema
 

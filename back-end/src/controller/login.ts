@@ -101,8 +101,6 @@ export async function postLoginController(
     return next(validationError)
   }
 
-  if (accountType === 'admin') tokenHandler(req, res, next)
-
   const { token } = await postLoginService({
     fullName: userData.fullName,
     email: userData.email,

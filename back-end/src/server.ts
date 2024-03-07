@@ -8,7 +8,7 @@ const port = process.env.PORT || '3000'
 const token = createJwtToken({
   fullName: 'Lucas Chavarem',
   email: 'test@test.com',
-  accountType: 'admin',
+  accountType: 'user',
 })
 
 console.log(token)

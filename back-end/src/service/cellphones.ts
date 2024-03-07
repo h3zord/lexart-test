@@ -16,23 +16,19 @@ export async function getCellphonesService({
   color,
   price,
 }: ISearchOptions) {
-  const searchConditions = {
-    brand,
-    model,
-    color,
-  }
-
-  const filteredConditions = Object.fromEntries(
-    Object.entries(searchConditions).filter(
-      ([, condition]) => condition !== undefined,
-    ),
-  )
-
   const cellphonesList = await Cellphone.findAll({
     where: {
-      ...filteredConditions,
       name: {
         [Op.like]: name ? `%${name}%` : '%',
+      },
+      brand: {
+        [Op.like]: brand ? `%${brand}%` : '%',
+      },
+      model: {
+        [Op.like]: model ? `%${model}%` : '%',
+      },
+      color: {
+        [Op.like]: color ? `%${color}%` : '%',
       },
     },
     order: price && [['price', price]],
